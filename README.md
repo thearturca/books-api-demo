@@ -21,33 +21,33 @@
 
 ## Запуск
 
-1. Генерация ключей для JWT
+### 1. Генерация ключей для JWT
 
-a. Linux:
+Linux:
 ```sh
 sh generate-keys.sh
 ```
 
-b. Windows:
+Windows:
 ```sh
 generate-keys.ps1
 ```
 
-2. Запуск
-a. Запуск через Docker
+### Запуск
+Запуск через Docker
 ```sh
 docker-compose up --build
 ```
 
-b. Запуске локально в режиме разработки
+Запуск локально в режиме разработки
 
-I. Установка зависимостей
+1. Установка зависимостей
 ```sh
 pnpm i --frozen-lockfile
 ```
 
 
-II. Запуск
+2. Запуск
 ```sh
 pnpm run start:dev
 ```
