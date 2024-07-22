@@ -92,8 +92,10 @@ export class UsersService {
             const verifiedUser = await this.db
                   .updateTable("Users")
                   .set({ is_verified: true })
-                  .innerJoin("EmailVerification", "Users.id", "EmailVerification.user_id")
+                  .from("EmailVerification")
+                  .whereRef("EmailVerification.user_id", "=", "Users.id")
                   .where("Users.id", "=", userId)
+                  .where("EmailVerification.user_id", "=", userId)
                   .where("EmailVerification.token", "=", token.toLowerCase())
                   .returning([
                         "Users.id",
@@ -107,6 +109,16 @@ export class UsersService {
 
             if (!verifiedUser) {
                   throw new NotFoundError("User not found");
+            }
+
+            const deletedCodes = await this.db
+                  .deleteFrom("EmailVerification")
+                  .where("user_id", "=", userId)
+                  .returning("id")
+                  .execute();
+
+            if (deletedCodes.length === 0) {
+                  throw new Error("Verification code not found");
             }
 
             return verifiedUser;
