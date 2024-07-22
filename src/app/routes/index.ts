@@ -8,3 +8,7 @@ export const defaultRouter = new Router<DefaultState, Context>();
 
 defaultRouter.use("/books", booksRouter.routes(), booksRouter.allowedMethods());
 defaultRouter.use("/users", usersRouter.routes(), usersRouter.allowedMethods());
+defaultRouter.get("/health", async (ctx) => {
+      ctx.body = "OK";
+      ctx.status = 200;
+});
