@@ -45,6 +45,8 @@ services:
     restart: unless-stopped
     environment:
       PG_HOST: books-postgres
+      JWT_ACCESS_PUBLIC_KEY: "/key.pub"
+      JWT_ACCESS_PRIVATE_KEY: "/key"
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:${PORT}/api/health || exit 1
       interval: 30s
@@ -56,6 +58,9 @@ services:
       - 127.0.0.1:${PORT}:${PORT}
     env_file:
       - .env
+    volumes:
+      - ${PWD}${JWT_ACCESS_PUBLIC_KEY}:/key.pub
+      - ${PWD}${JWT_ACCESS_PRIVATE_KEY}:/key
 
 volumes:
   pg_data:
