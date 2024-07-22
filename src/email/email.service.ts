@@ -22,16 +22,16 @@ export class EmailService {
             })
       }
 
-      public async sendEmail(email: string, subject: string, text: string): Promise<void> {
+      public async sendEmail(email: string, subject: string, html: string): Promise<void> {
             await this.transport.sendMail({
                   from: this.config.username,
                   to: email,
                   subject,
-                  text,
+                  html,
             });
       }
 
       public async sendVerificationEmail(email: string, token: string): Promise<void> {
-            await this.sendEmail(email, "Verify your email", `Your verification token is <b>${token}</b>`);
+            await this.sendEmail(email, "Email verification", `Your verification code is <br> <b>${token}</b>`);
       }
 }
