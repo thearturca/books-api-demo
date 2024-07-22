@@ -4,7 +4,7 @@
       "description": "",
       "main": "index.js",
       "scripts": {
-            "start:dev": "dotenv-run --environment development -- tsx src/index.ts --watch",
+            "start:dev": "dotenv-run --environment development -- tsx watch src/index.ts",
             "start": "node --require @dotenv-run/load dist/index.js",
             "build": "tsc --project tsconfig.build.json",
             "migration:up": "dotenv-run --environment development -- tsx bin/migration.up.ts",
