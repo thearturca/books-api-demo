@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: books-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD="password"
+      - PGDATABASE=${PG_DATABASE}
+      - POSTGRES_USER=${PG_USERNAME}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - PGPORT=${PG_PORT}
+      - PGHOST=${PG_HOST}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${PG_PORT}:${PG_PORT}"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${PG_USERNAME}"]
+      interval: 5s
+      retries: 5
+    env_file:
+      - .env
+
+  migrator:
+    build:
+      target: migrator
+      context: .
+    container_name: books-migrator
+    restart: no
+    environment:
+      PG_HOST: books-postgres
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  books-api:
+    build: 
+      target: production
+      context: .
+    container_name: books-api
+    restart: unless-stopped
+    environment:
+      PG_HOST: books-postgres
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:${PORT}/api/health || exit 1
+      interval: 30s
+      retries: 5
+      timeout: 10s
+    depends_on:
+      - migrator
+    ports:
+      - 127.0.0.1:${PORT}:${PORT}
+    env_file:
+      - .env
+
+volumes:
+  pg_data:
